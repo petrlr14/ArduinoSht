@@ -55,7 +55,7 @@ void setup()
 void loop()
 {
     int x=map(analogRead(A0), 0, 255, 1, 4);
-    intyx=map(analogRead(A1), 0, 255, 1, 4);
+    int y=map(analogRead(A1), 0, 255, 1, 4);
     for (int h = 0; h < frames; h++)
     {
         for (int i = 0; i < 50*x; i++)
