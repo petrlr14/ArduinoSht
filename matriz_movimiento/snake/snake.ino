@@ -1,4 +1,5 @@
-int frames = 5;
+int xEnemy=5;
+int yEnemy=5;
 int matriz[6][6] = {
     {0, 0, 0, 0, 0, 0},
      {0, 0, 0, 0, 0, 0},
@@ -41,19 +42,19 @@ void loop()
     int x=map(analogRead(A0), 0, 1023, 1, 6);
     int y=map(analogRead(A1), 0, 1023, 1, 6);
     
-    for(int i=0; i<50; i++){
-      for(int j=0; j<6; j++){
-        digitalWrite(j, HIGH);
-        cleanMatrix();
-        matriz[x-1][y-1]=1;
-        for(int k=6; k<12; k++){
-          if(matriz[j][k-6]==1)  {
-            digitalWrite(k, LOW);
-          }
-          
-        }
-        limpiar();
         
-      }
-    }
+        for(int i=0; i<50; i++){
+            for(int j=0; j<6; j++){
+                digitalWrite(j, HIGH);
+                cleanMatrix();
+                matriz[x-1][y-1]=1;
+                for(int k=6; k<12; k++){
+                    if(matriz[j][k-6]==1)  {
+                        digitalWrite(k, LOW);
+                    } 
+                }
+                limpiar();
+            }
+        }
+    
 }
