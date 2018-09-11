@@ -11,6 +11,38 @@ int matriz[6][6] = {
     {0, 0, 0, 0, 0, 0}
 };
 
+int frames[5][6][6] = {
+    {{1, 1, 1, 1, 1, 1},
+     {1, 0, 0, 0, 0, 1},
+     {1, 0, 0, 0, 0, 1},
+     {1, 0, 0, 0, 0, 1},
+     {1, 0, 0, 0, 0, 1},
+     {1, 1, 1, 1, 1, 1}},
+    {{0, 0, 0, 0, 0, 0},
+     {0, 1, 1, 1, 1, 0},
+     {0, 1, 0, 0, 1, 0},
+     {0, 1, 0, 0, 1, 0},
+     {0, 1, 1, 1, 1, 0},
+     {0, 0, 0, 0, 0, 0}},
+    {{0, 0, 0, 0, 0, 0},
+     {0, 0, 0, 0, 0, 0},
+     {0, 0, 1, 1, 0, 0},
+     {0, 0, 1, 1, 0, 0},
+     {0, 0, 0, 0, 0, 0},
+     {0, 0, 0, 0, 0, 0}},
+    {{0, 0, 0, 0, 0, 0},
+     {0, 1, 1, 1, 1, 0},
+     {0, 1, 0, 0, 1, 0},
+     {0, 1, 0, 0, 1, 0},
+     {0, 1, 1, 1, 1, 0},
+     {0, 0, 0, 0, 0, 0}},
+    {{1, 1, 1, 1, 1, 1},
+     {1, 0, 0, 0, 0, 1},
+     {1, 0, 0, 0, 0, 1},
+     {1, 0, 0, 0, 0, 1},
+     {1, 0, 0, 0, 0, 1},
+     {1, 1, 1, 1, 1, 1}}};
+
 void limpiar()
 {
     //Los pines de las filas se ponen en LOW.
@@ -22,13 +54,6 @@ void limpiar()
     for (int i = 6; i < 12; i++)
     {
         digitalWrite(i, HIGH);
-    }
-}
-
-void setup()
-{
-    for (int i = 0; i < 12; i++){
-        pinMode(i, OUTPUT);
     }
 }
 
@@ -69,10 +94,38 @@ void updateMatrix(){
     matriz[currentPosY/1000][currentPosX/1000]=1;
 }
 
-void loop()
-{
-    
-    
+void resetGame(){
+    cleanMatrix();
+    matriz[0][0]=1;
+    xEnemy=random(0, 5);
+    yEnemy=random(0, 5);
+    startTime=currentTime;
+  }
+void runFrame(){
+    for (int h = 0; h < 5; h++){
+        for (int i = 0; i <500; i++){
+            for (int j = 0; j < 6; j++){
+                digitalWrite(j, HIGH);
+                for (int k = 6; k < 12; k++){
+                    if (frames[h][j][k - 6] == 1){
+                        digitalWrite(k, LOW);
+                    }
+                }
+                limpiar();
+            }
+        }
+    }
+    resetGame();
+}
+
+
+void setup(){
+    for (int i = 0; i < 12; i++){
+        pinMode(i, OUTPUT);
+    }
+}
+
+void loop(){
     currentTime=millis();
     if(currentTime>=startTime+6000){
         xEnemy=random(0, 5);
@@ -80,15 +133,19 @@ void loop()
         startTime=currentTime;
     }
     for(int i=0; i<500; i++){
+        digitalWrite(xEnemy, HIGH);
+        digitalWrite(yEnemy+6, LOW);
+        limpiar();
         for(int j=0; j<6; j++){
             digitalWrite(j, HIGH);
             for(int k=6; k<12; k++){
-                if(matriz[j][k-6]==1){
+                if(matriz[j][k-6]==1 && matriz[xEnemy][yEnemy]!=1){
                     digitalWrite(k, LOW);
+                }else if(matriz[j][k-6]==1 && matriz[xEnemy][yEnemy]==1){
+                    runFrame();
                 }
             }
             limpiar();
-            
             updateMatrix();
         }
     }
