@@ -1,5 +1,7 @@
-int xEnemy=5;
-int yEnemy=5;
+int xEnemy;
+int yEnemy;
+bool pressedPlus=true, pressedMinus=true;
+int speed=0;
 int currentPosX=0, currentPosY=0;
 unsigned long currentTime, startTime=0;
 int matriz[6][6] = {
@@ -100,6 +102,7 @@ void resetGame(){
     xEnemy=random(0, 5);
     yEnemy=random(0, 5);
     startTime=currentTime;
+    speed=0;
   }
 void runFrame(){
     for (int h = 0; h < 5; h++){
@@ -118,6 +121,24 @@ void runFrame(){
     resetGame();
 }
 
+void increaseSpeed(){
+    if(digitalRead(12)==HIGH && pressedPlus){
+        speed+=1000;
+        speed=constrain(speed, -4000, 4000);
+        pressedPlus=!pressedPlus;
+    }
+    if(digitalRead(12)==LOW){
+        pressedPlus=!pressedPlus;
+    }
+    if(digitalRead(13)==HIGH && pressedMinus){
+        speed-=1000;
+        speed=constrain(speed, -4000, 4000);
+        pressedMinus=!pressedMinus;
+    }
+    if(digitalRead(13)==LOW){
+        pressedMinus=!pressedMinus;
+    }
+}
 
 void setup(){
     for (int i = 0; i < 12; i++){
@@ -127,7 +148,7 @@ void setup(){
 
 void loop(){
     currentTime=millis();
-    if(currentTime>=startTime+6000){
+    if(currentTime>=startTime+(6000+speed)){
         xEnemy=random(0, 5);
         yEnemy=random(0, 5);
         startTime=currentTime;
@@ -135,6 +156,7 @@ void loop(){
     for(int i=0; i<500; i++){
         digitalWrite(xEnemy, HIGH);
         digitalWrite(yEnemy+6, LOW);
+        increaseSpeed();
         limpiar();
         for(int j=0; j<6; j++){
             digitalWrite(j, HIGH);
